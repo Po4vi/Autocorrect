@@ -318,6 +318,7 @@ if __name__ == '__main__':
         print('❌ Error: OPENROUTER_API_KEY not found in .env file')
         exit(1)
     
-    print('✓ Spell-Check Chatbot running on http://localhost:5000')
-    print('✓ Open http://localhost:5000 in your browser')
-    app.run(debug=True, port=5000)
+    port = int(os.getenv('PORT', 5000))
+    print(f'✓ Spell-Check Chatbot running on http://0.0.0.0:{port}')
+    print(f'✓ Open http://localhost:{port} in your browser')
+    app.run(host='0.0.0.0', port=port, debug=True)
