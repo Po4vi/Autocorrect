@@ -1,90 +1,269 @@
 # 🤔 Think - AI Spell-Check Chatbot
 
-A modern, intelligent spell-checking chatbot powered by OpenRouter APIs with a beautiful web interface.
+A modern, intelligent spell-checking chatbot powered by OpenRouter APIs with a ChatGPT-style interface.
 
 ## Features
 
 ✨ **Smart Features**
-- Real-time spell checking with AI-powered corrections
-- OpenRouter API integration (supports multiple AI models)
-- Beautiful, responsive chat interface
-- Thinking indicators showing analysis process
-- Spelling error suggestions with alternatives
-- Educational explanations for corrections
+- **Dual-Mode Intelligence**: Separates spell-checking analysis from natural conversation
+- **Real-time Spell Checking**: Levenshtein distance algorithm with smart suggestions
+- **AI-Powered Responses**: OpenAI GPT-3.5-Turbo via OpenRouter
+- **Conversation Memory**: Session-based history (up to 50 messages)
+- **Beautiful UI**: ChatGPT-style interface with message avatars and analysis cards
+- **Interactive Corrections**: Click to accept suggestions or apply full corrections
+- **Copy to Clipboard**: Easy sharing of corrected text
 
 ## Prerequisites
 
-- **Node.js** (v14 or higher) - [Download](https://nodejs.org/)
+- **Python 3.8+** - [Download](https://www.python.org/downloads/)
 - **OpenRouter API Key** - [Get free API key](https://openrouter.ai/)
 
-## Setup Instructions
+## Local Setup
 
-### 1. Install Dependencies
+### 1. Clone Repository
 ```bash
-npm install
+git clone https://github.com/Po4vi/Autocorrect.git
+cd Autocorrect
 ```
 
-### 2. Create `.env` File
+### 2. Create Virtual Environment
 ```bash
-# Copy the example file
-copy .env.example .env
+python -m venv .venv
+.venv\Scripts\activate  # Windows
+# source .venv/bin/activate  # macOS/Linux
 ```
 
-Then edit `.env` and add your OpenRouter API key:
+### 3. Install Dependencies
+```bash
+pip install -r requirements.txt
 ```
+
+### 4. Create `.env` File
+```bash
 OPENROUTER_API_KEY=your_actual_api_key_here
-PORT=3000
+PORT=5000
 ```
 
 **Get your API key:**
 1. Go to [openrouter.ai](https://openrouter.ai/)
 2. Sign up (free account)
-3. Copy your API key from the dashboard
-4. Paste it in `.env`
+3. Navigate to Keys section
+4. Create new API key
+5. Copy and paste into `.env`
 
-### 3. Start the Server
+### 5. Run the Server
 ```bash
-npm start
+python server.py
 ```
 
-The server will run on `http://localhost:3000`
+The server will run on `http://localhost:5000`
 
-### 4. Open in Browser
-Visit: **http://localhost:3000**
+## Deployment
+
+### Option 1: Render (Recommended - Free)
+
+1. **Create Render Account**
+   - Go to [render.com](https://render.com/)
+   - Sign up with GitHub
+
+2. **Create New Web Service**
+   - Click "New +" → "Web Service"
+   - Connect your GitHub repository
+   - Select `Autocorrect` repo
+
+3. **Configure Service**
+   ```
+   Name: think-chatbot
+   Environment: Python 3
+   Build Command: pip install -r requirements.txt
+   Start Command: python server.py
+   ```
+
+4. **Add Environment Variables**
+   - Go to "Environment" tab
+   - Add: `OPENROUTER_API_KEY` = your_key
+   - Add: `PORT` = 5000
+
+5. **Deploy**
+   - Click "Create Web Service"
+   - Wait 2-3 minutes for deployment
+   - Access your app at: `https://think-chatbot.onrender.com`
+
+### Option 2: Railway
+
+1. **Setup**
+   ```bash
+   # Install Railway CLI
+   npm i -g @railway/cli
+   
+   # Login
+   railway login
+   ```
+
+2. **Deploy**
+   ```bash
+   railway init
+   railway up
+   ```
+
+3. **Add Environment Variables**
+   ```bash
+   railway variables set OPENROUTER_API_KEY=your_key
+   railway variables set PORT=5000
+   ```
+
+4. **Generate Domain**
+   ```bash
+   railway domain
+   ```
+
+### Option 3: PythonAnywhere
+
+1. **Create Account** at [pythonanywhere.com](https://www.pythonanywhere.com/)
+
+2. **Upload Code**
+   - Go to "Files" tab
+   - Upload all project files
+
+3. **Setup Virtual Environment**
+   ```bash
+   mkvirtualenv --python=/usr/bin/python3.10 myenv
+   pip install -r requirements.txt
+   ```
+
+4. **Configure Web App**
+   - Go to "Web" tab → "Add a new web app"
+   - Select "Manual configuration" → Python 3.10
+   - Set source code directory: `/home/yourusername/Autocorrect`
+   - Edit WSGI file to point to `server.py`
+
+5. **Set Environment Variables**
+   - Add to WSGI file or use `.env`
+
+6. **Reload** and visit your domain
+
+### Option 4: DigitalOcean App Platform
+
+1. **Create Account** at [digitalocean.com](https://www.digitalocean.com/)
+
+2. **Create App**
+   - Click "Create" → "Apps"
+   - Connect GitHub repository
+
+3. **Configure**
+   ```
+   Type: Web Service
+   Run Command: python server.py
+   HTTP Port: 5000
+   ```
+
+4. **Add Environment Variables** in App settings
+
+5. **Deploy** and access via provided URL
+
+## Production Configuration
+
+For production deployment, ensure:
+
+1. **Set Production Host**
+   ```python
+   # In server.py, update the last line:
+   app.run(host='0.0.0.0', port=int(os.getenv('PORT', 5000)))
+   ```
+
+2. **Use Production WSGI Server**
+   
+   Add to `requirements.txt`:
+   ```
+   gunicorn==21.2.0
+   ```
+   
+   Update start command:
+   ```bash
+   gunicorn server:app --bind 0.0.0.0:$PORT
+   ```
+
+3. **Security Checklist**
+   - ✅ Never commit `.env` file
+   - ✅ Use environment variables for secrets
+   - ✅ Enable HTTPS on your hosting platform
+   - ✅ Set CORS origins properly for production
+   - ✅ Monitor API usage and set rate limits
 
 ## How It Works
 
-1. **User Input**: Type your message (it can have spelling errors)
-2. **Spell Check**: System detects spelling errors and suggests corrections
-3. **AI Processing**: OpenRouter API analyzes your message with context
-4. **Response**: Get intelligent suggestions with explanations
-5. **Learning**: Understand why corrections are needed
+### Dual-Mode Intelligence
 
-## API Models Available
+**Spell-Check Mode** (triggered by keywords: correct, fix, mistake, error, spell, grammar, check)
+1. User types message with errors
+2. Backend detects misspelled words using dictionary lookup
+3. Levenshtein distance algorithm generates top 5 suggestions per error
+4. AI provides natural response about the text
+5. Frontend displays conversation + separate analysis card with error rows
+6. User clicks suggestion chips to accept corrections
 
-The chatbot uses **LLaMA 2 70B** by default. You can change it in `server.js`:
+**Conversation Mode** (general questions)
+1. User asks regular questions
+2. Backend skips spell-checking logic
+3. AI responds naturally like ChatGPT
+4. No analysis cards shown, pure conversation flow
 
-**Popular OpenRouter Models:**
-- `meta-llama/llama-2-70b-chat` - Fast, powerful
-- `openai/gpt-3.5-turbo` - Accurate
-- `openai/gpt-4` - Most advanced
-- `anthropic/claude-2` - Excellent for reasoning
-- `mistralai/mistral-7b` - Lightweight
+### Technical Flow
+
+```
+User Input → Flask Backend → Spell Check (Levenshtein) → OpenRouter API (GPT-3.5) 
+→ Response + Errors → Frontend → ChatGPT-style UI → Interactive Corrections
+```
+
+## Technology Stack
+
+**Backend:**
+- Python 3.8+ with Flask
+- OpenRouter API (OpenAI GPT-3.5-Turbo)
+- Levenshtein Distance algorithm
+- Session-based memory (UUID tracking)
+- In-memory conversation storage (deque, maxlen=50)
+
+**Frontend:**
+- Vanilla JavaScript (no frameworks)
+- Modern CSS3 with gradients and animations
+- Responsive design
+- Clipboard API integration
 
 ## Project Structure
 
 ```
-autocorrect-chatbot/
-├── server.js              # Express backend + OpenRouter integration
+Autocorrect/
+├── server.py              # Flask backend + spell-check logic
 ├── public/
-│   └── index.html         # Frontend UI with chat interface
-├── dictionary.json        # Spell checking dictionary
-├── package.json           # Dependencies
-├── .env.example          # Environment template
-└── README.md             # This file
+│   └── index.html         # Frontend UI (ChatGPT-style)
+├── dictionary.json        # English word dictionary (~100 words)
+├── requirements.txt       # Python dependencies
+├── .env                   # Environment variables (gitignored)
+├── .env.example          # Template for .env
+├── .gitignore            # Git exclusions
+└── README.md             # Documentation
 ```
 
 ## API Endpoints
+
+**POST** `/api/chat`
+- Send message, get AI response + spell errors
+- Body: `{"message": "your text"}`
+- Response: `{"response": "...", "spellingErrors": [...], "isSpellCheckMode": bool}`
+
+**POST** `/api/accept-suggestion`
+- Accept a spelling correction
+- Body: `{"wrongWord": "...", "correctWord": "..."}`
+- Response: `{"success": true}`
+
+**POST** `/api/clear-history`
+- Clear conversation history
+- Response: `{"success": true}`
+
+**GET** `/api/health`
+- Health check endpoint
+- Response: `{"status": "healthy"}`
 
 ### POST `/api/chat`
 Sends a message and gets AI response with spell-check
