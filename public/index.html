@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Think - AI Spell-Check Chatbot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .page {
+      position: relative;
+      min-height: 90vh;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .bg-shape {
+      position: absolute;
+      filter: blur(60px);
+      opacity: 0.35;
+      z-index: 0;
+      pointer-events: none;
+      border-radius: 50%;
+    }
+
+    .bg1 {
+      width: 360px;
+      height: 360px;
+      background: #8ec5ff;
+      top: -80px;
+      left: -40px;
+    }
+
+    .bg2 {
+      width: 320px;
+      height: 320px;
+      background: #f18acb;
+      bottom: -60px;
+      right: -20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      height: 90vh;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+      display: flex;
+      flex-direction: row;
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid rgba(0, 0, 0, 0.1);
+      overflow-y: auto;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .logo-icon {
+      font-size: 28px;
+    }
+
+    .logo-text {
+      background: linear-gradient(135deg, #fff 0%, #e0e7ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .new-chat-btn {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .new-chat-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .sidebar-section {
+      margin-bottom: 25px;
+    }
+
+    .sidebar-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      opacity: 0.7;
+      margin-bottom: 10px;
+      letter-spacing: 0.5px;
+    }
+
+    .sidebar-stats {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 15px;
+    }
+
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .stat-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .stat-value {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .features-list {
+      font-size: 13px;
+      line-height: 1.8;
+      opacity: 0.9;
+    }
+
+    .features-list li {
+      list-style: none;
+      margin-bottom: 8px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .features-list li:before {
+      content: "✓";
+      font-weight: 600;
+      color: #a8dadc;
+    }
+
+    /* Main Chat Area */
+    .main-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #f8f9fa;
+    }
+
+    .header {
+      background: white;
+      border-bottom: 1px solid #e9ecef;
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .status-strip {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 10px 30px;
+      background: rgba(255, 255, 255, 0.8);
+      border-bottom: 1px solid #e9ecef;
+      box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.03);
+    }
+
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #4338ca;
+      font-weight: 600;
+      font-size: 12px;
+      border: 1px solid #e0e7ff;
+      box-shadow: 0 2px 6px rgba(67, 56, 202, 0.08);
+    }
+
+    .status-chip.success {
+      background: #e6fffa;
+      color: #0f766e;
+      border-color: #99f6e4;
+    }
+
+    .status-chip.warn {
+      background: #fff7e6;
+      color: #b45309;
+      border-color: #fde68a;
+    }
+
+    .header-title {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .header-title h1 {
+      font-size: 22px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .header-title p {
+      font-size: 13px;
+      color: #999;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .header-btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      background: #f0f2f5;
+      color: #666;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .header-btn:hover {
+      background: #e0e2e6;
+    }
+
+    .header-btn.danger {
+      background: #ffe0e0;
+      color: #d32f2f;
+    }
+
+    .header-btn.danger:hover {
+      background: #ffc9c9;
+    }
+
+    .chat-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Welcome Section */
+    .welcome-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+      margin: auto;
+    }
+
+    .welcome-icon {
+      font-size: 80px;
+      margin-bottom: 20px;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .welcome-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .welcome-subtitle {
+      font-size: 16px;
+      color: #999;
+      margin-bottom: 30px;
+      max-width: 500px;
+    }
+
+    .welcome-features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .feature-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #e9ecef;
+      transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      border-color: #667eea;
+    }
+
+    .feature-icon {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .feature-name {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+
+    .feature-desc {
+      font-size: 12px;
+      color: #999;
+      line-height: 1.4;
+    }
+
+    .example-section {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #e9ecef;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .example-title {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 12px;
+      font-size: 13px;
+      text-transform: uppercase;
+      color: #999;
+    }
+
+    .example-items {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .example-item {
+      padding: 10px 12px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      font-size: 12px;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .example-item:hover {
+      background: #e9ecef;
+      color: #333;
+    }
+
+    .example-item:before {
+      content: "→";
+      color: #667eea;
+      font-weight: 600;
+    }
+
+    /* Messages - ChatGPT Style */
+    .message {
+      margin-bottom: 20px;
+      display: flex;
+      animation: slideIn 0.3s ease;
+      width: 100%;
+      gap: 12px;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message.user {
+      justify-content: flex-end;
+    }
+
+    .message.user .message-content {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 18px 18px 2px 18px;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    }
+
+    .message-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+    }
+
+    .message-wrapper {
+      flex: 1;
+      max-width: 85%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .message.user .message-wrapper {
+      max-width: 70%;
+    }
+
+    .message-content {
+      padding: 14px 18px;
+      border-radius: 12px;
+      word-wrap: break-word;
+      font-size: 14px;
+      line-height: 1.6;
+      background: white;
+      color: #333;
+      border: 1px solid #e9ecef;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Spell Analysis Card */
+    .spell-analysis-card {
+      background: #f8f9fb;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 8px;
+    }
+
+    .analysis-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .analysis-icon {
+      font-size: 20px;
+    }
+
+    .analysis-title {
+      font-weight: 600;
+      color: #374151;
+      font-size: 14px;
+      flex: 1;
+    }
+
+    .analysis-count {
+      background: #fef3c7;
+      color: #92400e;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .suggestions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .error-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px;
+      background: white;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .error-word {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 120px;
+    }
+
+    .wrong-word {
+      color: #dc2626;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .arrow {
+      color: #9ca3af;
+      font-size: 14px;
+    }
+
+    .suggestions-container {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+
+    .thinking-indicator {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      margin-bottom: 15px;
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .thinking-indicator::before {
+      content: '🤔';
+      font-size: 24px;
+      animation: bounce 1s infinite;
+    }
+
+    .thinking-indicator::after {
+      content: '';
+      display: flex;
+      gap: 4px;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .thinking-dots {
+      display: inline-flex;
+      gap: 4px;
+      margin-left: 8px;
+    }
+
+    .thinking-dots span {
+      width: 6px;
+      height: 6px;
+      background: #667eea;
+      border-radius: 50%;
+      animation: bounce 1.4s infinite ease-in-out;
+    }
+
+    .thinking-dots span:nth-child(1) {
+      animation-delay: -0.32s;
+    }
+
+    .thinking-dots span:nth-child(2) {
+      animation-delay: -0.16s;
+    }
+
+    .spelling-error {
+      background: #f8d7da;
+      border: 1px solid #f5c6cb;
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-top: 10px;
+      font-size: 12px;
+      color: #721c24;
+    }
+
+    .spelling-error strong {
+      color: #721c24;
+    }
+
+    .suggestions {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .suggestion-chip {
+      background: white;
+      border: 2px solid #e5e7eb;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #374151;
+    }
+
+    .suggestion-chip:hover {
+      background: #f3f4f6;
+      border-color: #667eea;
+      color: #667eea;
+      transform: translateY(-1px);
+    }
+
+    .suggestion-chip.accepted {
+      background: #d1fae5;
+      border-color: #10b981;
+      color: #065f46;
+      font-weight: 600;
+      pointer-events: none;
+    }
+
+    .suggestion-chip.accepted::before {
+      content: "✓ ";
+    }
+
+    .context-badge {
+      background: #d1ecf1;
+      border: 1px solid #bee5eb;
+      color: #0c5460;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      margin-top: 8px;
+      display: inline-block;
+    }
+
+    /* Corrected Sentence Section */
+    .corrected-section {
+      background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+      border: 1px solid #c3e6cb;
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 12px;
+    }
+
+    .corrected-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #155724;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .corrected-text {
+      background: white;
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #155724;
+      font-weight: 500;
+      word-wrap: break-word;
+      margin-bottom: 8px;
+      border: 1px solid #c3e6cb;
+    }
+
+    .corrected-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .corrected-btn {
+      flex: 1;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .corrected-btn.copy {
+      background: #155724;
+      color: white;
+    }
+
+    .corrected-btn.copy:hover {
+      background: #0d3e1f;
+    }
+
+    .corrected-btn.apply {
+      background: white;
+      color: #155724;
+      border: 1px solid #155724;
+    }
+
+    .corrected-btn.apply:hover {
+      background: #f0f9f6;
+    }
+
+    .corrected-btn:active {
+      transform: scale(0.95);
+    }
+
+    .copy-feedback {
+      font-size: 11px;
+      color: #155724;
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .copy-feedback.show {
+      opacity: 1;
+    }
+
+    /* Input Area */
+    .input-area {
+      padding: 20px 30px;
+      background: white;
+      border-top: 1px solid #e9ecef;
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+    }
+
+    .input-group {
+      flex: 1;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 12px 16px;
+      border: 2px solid #e9ecef;
+      border-radius: 12px;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: all 0.3s;
+    }
+
+    input[type="text"]:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    input[type="text"]::placeholder {
+      color: #bbb;
+    }
+
+    .send-btn {
+      width: 44px;
+      height: 44px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      cursor: pointer;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .send-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .send-btn:active {
+      transform: scale(0.95);
+    }
+
+    .send-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Scrollbar */
+    .chat-container::-webkit-scrollbar,
+    .sidebar::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .chat-container::-webkit-scrollbar-track,
+    .sidebar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .chat-container::-webkit-scrollbar-thumb,
+    .sidebar::-webkit-scrollbar-thumb {
+      background: #ddd;
+      border-radius: 4px;
+    }
+
+    .chat-container::-webkit-scrollbar-thumb:hover,
+    .sidebar::-webkit-scrollbar-thumb:hover {
+      background: #999;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        max-width: 100%;
+      }
+
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        padding: 15px;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .logo {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+      }
+
+      .new-chat-btn {
+        margin-bottom: 0;
+        width: auto;
+      }
+
+      .sidebar-section {
+        display: none;
+      }
+
+      .message-content {
+        max-width: 85%;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="bg-shape bg1"></div>
+    <div class="bg-shape bg2"></div>
+    <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="logo">
+        <span class="logo-icon">🤔</span>
+        <span class="logo-text">Think</span>
+      </div>
+      
+      <button class="new-chat-btn" id="newChatBtn">
+        ➕ New Chat
+      </button>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Conversation</div>
+        <div class="sidebar-stats">
+          <div class="stat-item">
+            <span>Messages</span>
+            <span class="stat-value" id="sidebarMessageCount">0</span>
+          </div>
+          <div class="stat-item">
+            <span>Session ID</span>
+            <span class="stat-value" style="font-size: 11px; opacity: 0.7;" id="sidebarSessionId">New</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section" style="flex: 1; margin-bottom: 0;">
+        <div class="sidebar-label">Features</div>
+        <ul class="features-list">
+          <li>Spell Check</li>
+          <li>Grammar Fix</li>
+          <li>AI Assist</li>
+          <li>Memory</li>
+          <li>Context Aware</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Main Chat Area -->
+    <div class="main-area">
+      <!-- Header -->
+      <div class="header">
+        <div class="header-title">
+          <h1>Welcome to Think</h1>
+          <p>Your AI-powered spell-check assistant</p>
+        </div>
+        <div class="header-actions">
+          <button class="header-btn" id="statsBtn">
+            📊 Stats
+          </button>
+          <button class="header-btn danger" id="clearConvBtn">
+            🗑️ Clear
+          </button>
+        </div>
+      </div>
+
+      <div class="status-strip">
+        <div class="status-chip success">✨ Spell Check On</div>
+        <div class="status-chip success">🧠 Memory Active</div>
+        <div class="status-chip">🤖 Model: GPT-3.5</div>
+        <div class="status-chip warn">⚡ Fast Responses</div>
+      </div>
+
+      <!-- Chat Container -->
+      <div class="chat-container" id="chatContainer">
+        <div class="welcome-section" id="welcomeSection">
+          <div class="welcome-icon">🤔</div>
+          <h2 class="welcome-title">Welcome to Think</h2>
+          <p class="welcome-subtitle">Your intelligent spell-checking and writing assistant. Start typing to get suggestions!</p>
+          
+          <div class="welcome-features">
+            <div class="feature-card">
+              <div class="feature-icon">✓</div>
+              <div class="feature-name">Spell Check</div>
+              <div class="feature-desc">Real-time spelling detection</div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🧠</div>
+              <div class="feature-name">Memory</div>
+              <div class="feature-desc">Remembers conversation</div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">💬</div>
+              <div class="feature-name">AI Response</div>
+              <div class="feature-desc">Intelligent suggestions</div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">⚡</div>
+              <div class="feature-name">Fast</div>
+              <div class="feature-desc">Quick processing</div>
+            </div>
+          </div>
+
+          <div class="example-section">
+            <div class="example-title">Try typing something like:</div>
+            <div class="example-items">
+              <div class="example-item" onclick="insertExample('i hav a speling eror')">i hav a speling eror</div>
+              <div class="example-item" onclick="insertExample('can u help me with grammer?')">can u help me with grammer?</div>
+              <div class="example-item" onclick="insertExample('what is the best way to write profesional emails?')">what is the best way to write profesional emails?</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input Area -->
+      <div class="input-area">
+        <div class="input-group">
+          <input 
+            type="text" 
+            id="messageInput" 
+            placeholder="Type your message here... Let me check your spelling!" 
+            autocomplete="off"
+          >
+          <button class="send-btn" id="sendBtn" title="Send message">
+            ➤
+          </button>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <script>
+    const chatContainer = document.getElementById('chatContainer');
+    const messageInput = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const newChatBtn = document.getElementById('newChatBtn');
+    const clearConvBtn = document.getElementById('clearConvBtn');
+    const welcomeSection = document.getElementById('welcomeSection');
+    const sidebarMessageCount = document.getElementById('sidebarMessageCount');
+    const sidebarSessionId = document.getElementById('sidebarSessionId');
+
+    let isLoading = false;
+    let messageCountTotal = 0;
+    let currentSessionId = null;
+
+    // Accept suggestion and replace word
+    async function acceptSuggestion(wrongWord, correctWord, chipElement, messageDiv) {
+      // Add visual feedback
+      chipElement.classList.add('accepted');
+      chipElement.textContent = `✓ ${correctWord}`;
+      chipElement.style.cursor = 'default';
+      chipElement.style.pointerEvents = 'none';
+      chipElement.title = 'Accepted';
+
+      try {
+        // Find the original user message in chat
+        const userMessages = document.querySelectorAll('.message.user .message-content');
+        const lastUserMessage = userMessages[userMessages.length - 1];
+        
+        if (lastUserMessage) {
+          const originalText = lastUserMessage.textContent;
+          // Replace the wrong word with correct word (case-insensitive)
+          const regex = new RegExp(`\\b${wrongWord}\\b`, 'gi');
+          const correctedText = originalText.replace(regex, correctWord);
+          
+          // Send correction to backend
+          const response = await fetch('/api/accept-suggestion', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              originalText: originalText,
+              correctedText: correctedText,
+              wrongWord: wrongWord,
+              correctWord: correctWord
+            })
+          });
+
+          const data = await response.json();
+          
+          if (response.ok) {
+            // Update UI with corrected message
+            lastUserMessage.textContent = correctedText;
+            
+            // Show success feedback
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.style.cssText = `
+              background: #d4edda;
+              border: 1px solid #c3e6cb;
+              color: #155724;
+              padding: 8px 12px;
+              border-radius: 6px;
+              font-size: 12px;
+              margin-top: 8px;
+              animation: slideIn 0.3s ease;
+            `;
+            feedbackDiv.innerHTML = `✓ Applied correction: <strong>${wrongWord}</strong> → <strong>${correctWord}</strong>`;
+            messageDiv.appendChild(feedbackDiv);
+          }
+        }
+      } catch (error) {
+        console.error('Error accepting suggestion:', error);
+        chipElement.classList.remove('accepted');
+        chipElement.textContent = correctWord;
+        chipElement.style.cursor = 'pointer';
+        chipElement.style.pointerEvents = 'auto';
+        chipElement.title = `Click to accept: ${correctWord}`;
+      }
+    }
+
+    // Copy corrected sentence to clipboard
+    function copyCorrectedSentence(correctedText, buttonElement) {
+      navigator.clipboard.writeText(correctedText).then(() => {
+        // Show feedback
+        const originalText = buttonElement.textContent;
+        buttonElement.textContent = '✓ Copied!';
+        buttonElement.style.background = '#0d3e1f';
+        
+        setTimeout(() => {
+          buttonElement.textContent = originalText;
+          buttonElement.style.background = '';
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy:', err);
+      });
+    }
+
+    // Apply full corrected sentence
+    function applyFullCorrection(correctedText) {
+      const userMessages = document.querySelectorAll('.message.user .message-content');
+      const lastUserMessage = userMessages[userMessages.length - 1];
+      
+      if (lastUserMessage) {
+        const originalText = lastUserMessage.textContent;
+        lastUserMessage.textContent = correctedText;
+        
+        // Show success message
+        const parentMessage = lastUserMessage.closest('.message');
+        const feedbackDiv = document.createElement('div');
+        feedbackDiv.style.cssText = `
+          background: #d4edda;
+          border: 1px solid #c3e6cb;
+          color: #155724;
+          padding: 8px 12px;
+          border-radius: 6px;
+          font-size: 12px;
+          margin-top: 8px;
+          animation: slideIn 0.3s ease;
+        `;
+        feedbackDiv.innerHTML = `✓ Applied full correction`;
+        parentMessage.appendChild(feedbackDiv);
+      }
+    }
+
+    // Display corrected sentence section
+    function displayCorrectedSentence(correctedText, spellingErrors) {
+      const correctedSection = document.createElement('div');
+      correctedSection.className = 'corrected-section';
+      correctedSection.innerHTML = `
+        <div class="corrected-label">
+          ✨ Suggested Correction
+        </div>
+        <div class="corrected-text">${correctedText}</div>
+        <div class="corrected-actions">
+          <button class="corrected-btn copy" onclick="copyCorrectedSentence('${correctedText.replace(/'/g, "\\'")}', this)">
+            📋 Copy
+          </button>
+          <button class="corrected-btn apply" onclick="applyFullCorrection('${correctedText.replace(/'/g, "\\'")}')">
+            ✓ Apply All
+          </button>
+        </div>
+      `;
+      
+      chatContainer.appendChild(correctedSection);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    // Insert example text
+    function insertExample(text) {
+      messageInput.value = text;
+      messageInput.focus();
+    }
+
+    // Clear empty state / welcome section
+    function clearWelcomeState() {
+      if (welcomeSection) {
+        welcomeSection.remove();
+      }
+    }
+
+    // Update message counter
+    function updateMessageCount(count, sessionId = null) {
+      messageCountTotal = count;
+      sidebarMessageCount.textContent = count;
+      if (sessionId) {
+        currentSessionId = sessionId;
+        sidebarSessionId.textContent = sessionId.substring(0, 8) + '...';
+      }
+    }
+
+    // Add message to chat
+    function addMessage(text, isUser, spellingErrors = [], thinking = '', isSpellCheckMode = false) {
+      clearWelcomeState();
+
+      if (thinking && !isUser) {
+        const thinkingDiv = document.createElement('div');
+        thinkingDiv.className = 'thinking-indicator';
+        thinkingDiv.textContent = thinking;
+        chatContainer.appendChild(thinkingDiv);
+      }
+
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
+
+      // Add avatar for AI messages
+      if (!isUser) {
+        const avatarDiv = document.createElement('div');
+        avatarDiv.className = 'message-avatar';
+        avatarDiv.textContent = '🤔';
+        messageDiv.appendChild(avatarDiv);
+      }
+
+      const messageWrapper = document.createElement('div');
+      messageWrapper.className = 'message-wrapper';
+
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'message-content';
+      contentDiv.textContent = text;
+
+      messageWrapper.appendChild(contentDiv);
+
+      messageDiv.appendChild(messageWrapper);
+
+      // Add spell-check analysis section (only if there are errors and in separate card)
+      if (!isUser && spellingErrors.length > 0 && isSpellCheckMode) {
+        const analysisDiv = document.createElement('div');
+        analysisDiv.className = 'spell-analysis-card';
+        analysisDiv.innerHTML = `
+          <div class="analysis-header">
+            <span class="analysis-icon">🔍</span>
+            <span class="analysis-title">Spelling Analysis</span>
+            <span class="analysis-count">${spellingErrors.length} issue${spellingErrors.length > 1 ? 's' : ''}</span>
+          </div>
+        `;
+        
+        const suggestionsList = document.createElement('div');
+        suggestionsList.className = 'suggestions-list';
+        
+        spellingErrors.forEach((error, errorIndex) => {
+          if (error.suggestions.length > 0) {
+            const errorRow = document.createElement('div');
+            errorRow.className = 'error-row';
+            
+            const errorWord = document.createElement('div');
+            errorWord.className = 'error-word';
+            errorWord.innerHTML = `<span class="wrong-word">"${error.word}"</span> <span class="arrow">→</span>`;
+            errorRow.appendChild(errorWord);
+            
+            const suggestionsContainer = document.createElement('div');
+            suggestionsContainer.className = 'suggestions-container';
+            
+            error.suggestions.forEach((suggestion, suggestionIndex) => {
+              const chip = document.createElement('button');
+              chip.className = 'suggestion-chip';
+              chip.textContent = suggestion;
+              chip.setAttribute('data-error-word', error.word);
+              chip.setAttribute('data-suggestion', suggestion);
+              chip.title = `Click to use: ${suggestion}`;
+              
+              chip.addEventListener('click', (e) => {
+                e.stopPropagation();
+                acceptSuggestion(error.word, suggestion, chip, messageDiv);
+              });
+              
+              suggestionsContainer.appendChild(chip);
+            });
+            
+            errorRow.appendChild(suggestionsContainer);
+            suggestionsList.appendChild(errorRow);
+          }
+        });
+        
+        analysisDiv.appendChild(suggestionsList);
+        messageWrapper.appendChild(analysisDiv);
+      }
+
+      if (!isUser && messageCountTotal > 2) {
+        const contextBadge = document.createElement('div');
+        contextBadge.className = 'context-badge';
+        contextBadge.textContent = '🧠 Context from previous messages';
+        messageWrapper.appendChild(contextBadge);
+      }
+
+      chatContainer.appendChild(messageDiv);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    // Send message
+    async function sendMessage() {
+      const message = messageInput.value.trim();
+      if (!message || isLoading) return;
+
+      isLoading = true;
+      sendBtn.disabled = true;
+      messageInput.value = '';
+
+      addMessage(message, true);
+
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          addMessage(data.message, false, data.spellingErrors || [], data.thinking, data.isSpellCheckMode);
+          
+          // Add corrected sentence if there are spelling errors
+          if (data.correctedSentence && data.spellingErrors.length > 0) {
+            displayCorrectedSentence(data.correctedSentence, data.spellingErrors);
+          }
+          
+          if (data.conversationCount) {
+            updateMessageCount(data.conversationCount, data.sessionId);
+          }
+        } else {
+          addMessage(`Error: ${data.error}`, false);
+        }
+      } catch (error) {
+        addMessage(`Connection error: ${error.message}`, false);
+      }
+
+      isLoading = false;
+      sendBtn.disabled = false;
+      messageInput.focus();
+    }
+
+    // Clear conversation
+    async function clearConversation() {
+      if (messageCountTotal === 0) {
+        alert('No conversation to clear');
+        return;
+      }
+
+      if (!confirm('Are you sure you want to clear the conversation? This cannot be undone.')) {
+        return;
+      }
+
+      try {
+        await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ clearHistory: true })
+        });
+
+        // Clear UI
+        chatContainer.innerHTML = `
+          <div class="welcome-section" id="welcomeSection">
+            <div class="welcome-icon">🤔</div>
+            <h2 class="welcome-title">Welcome to Think</h2>
+            <p class="welcome-subtitle">Your intelligent spell-checking and writing assistant. Start typing to get suggestions!</p>
+            
+            <div class="welcome-features">
+              <div class="feature-card">
+                <div class="feature-icon">✓</div>
+                <div class="feature-name">Spell Check</div>
+                <div class="feature-desc">Real-time spelling detection</div>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">🧠</div>
+                <div class="feature-name">Memory</div>
+                <div class="feature-desc">Remembers conversation</div>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <div class="feature-name">AI Response</div>
+                <div class="feature-desc">Intelligent suggestions</div>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-name">Fast</div>
+                <div class="feature-desc">Quick processing</div>
+              </div>
+            </div>
+
+            <div class="example-section">
+              <div class="example-title">Try typing something like:</div>
+              <div class="example-items">
+                <div class="example-item" onclick="insertExample('i hav a speling eror')">i hav a speling eror</div>
+                <div class="example-item" onclick="insertExample('can u help me with grammer?')">can u help me with grammer?</div>
+                <div class="example-item" onclick="insertExample('what is the best way to write profesional emails?')">what is the best way to write profesional emails?</div>
+              </div>
+            </div>
+          </div>
+        `;
+        updateMessageCount(0);
+      } catch (error) {
+        alert('Error clearing conversation: ' + error.message);
+      }
+    }
+
+    // New chat (same as clear)
+    function newChat() {
+      clearConversation();
+    }
+
+    // Event listeners
+    sendBtn.addEventListener('click', sendMessage);
+    newChatBtn.addEventListener('click', newChat);
+    clearConvBtn.addEventListener('click', clearConversation);
+    messageInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+
+    messageInput.focus();
+  </script>
+</body>
+</html>
