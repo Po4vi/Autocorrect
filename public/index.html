@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Think - AI Spell-Check Chatbot</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,6 +22,13 @@
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
       padding: 20px;
+      overflow-x: hidden;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 0;
+      }
     }
 
     .page {
@@ -860,44 +870,269 @@
       background: #999;
     }
 
-    /* Responsive */
+    /* Mobile Responsive Styles */
     @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
-        max-width: 100%;
+      .page {
+        padding: 0;
+      }
+
+      .bg-shape {
+        display: none;
       }
 
       .sidebar {
         width: 100%;
         flex-direction: row;
-        padding: 15px;
+        padding: 12px 16px;
         align-items: center;
         justify-content: space-between;
+        min-height: auto;
+        height: auto;
+        overflow: visible;
       }
 
       .logo {
         margin-bottom: 0;
         padding-bottom: 0;
         border-bottom: none;
+        font-size: 20px;
+        gap: 8px;
+      }
+
+      .logo-icon {
+        font-size: 24px;
       }
 
       .new-chat-btn {
         margin-bottom: 0;
         width: auto;
+        padding: 10px 16px;
+        font-size: 14px;
       }
 
       .sidebar-section {
         display: none;
       }
 
-      .message-content {
-        max-width: 85%;
+      .main-area {
+        width: 100%;
+        height: calc(100vh - 60px);
       }
 
       .header {
+        padding: 12px 16px;
+        flex-wrap: wrap;
+      }
+
+      .header-title {
+        font-size: 18px;
+      }
+
+      .clear-btn {
+        padding: 8px 14px;
+        font-size: 13px;
+      }
+
+      .status-strip {
+        padding: 8px 16px;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .status-chip {
+        padding: 6px 10px;
+        font-size: 11px;
+        gap: 4px;
+      }
+
+      .chat-container {
+        padding: 16px;
+        height: calc(100vh - 200px);
+      }
+
+      .message {
+        margin-bottom: 16px;
+      }
+
+      .message-content {
+        max-width: 100%;
+        padding: 12px 14px;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      .message.user .message-content {
+        max-width: 85%;
+      }
+
+      .spell-analysis-card {
+        padding: 12px;
+        margin-top: 8px;
+      }
+
+      .analysis-header {
+        font-size: 13px;
+      }
+
+      .error-row {
+        padding: 10px;
         flex-direction: column;
         align-items: flex-start;
-        gap: 10px;
+        gap: 8px;
+      }
+
+      .wrong-word {
+        font-size: 14px;
+      }
+
+      .arrow {
+        display: none;
+      }
+
+      .suggestion-container {
+        width: 100%;
+        flex-wrap: wrap;
+      }
+
+      .suggestion-chip {
+        padding: 8px 12px;
+        font-size: 13px;
+        min-width: auto;
+      }
+
+      .input-area {
+        padding: 12px 16px;
+        gap: 8px;
+      }
+
+      .input-wrapper {
+        gap: 8px;
+      }
+
+      #userInput {
+        font-size: 15px;
+        padding: 12px 14px;
+        min-height: 44px;
+      }
+
+      #sendBtn {
+        padding: 12px 20px;
+        font-size: 15px;
+        min-width: 60px;
+        min-height: 44px;
+      }
+
+      .welcome-section {
+        padding: 20px 16px;
+      }
+
+      .welcome-title {
+        font-size: 24px;
+      }
+
+      .welcome-subtitle {
+        font-size: 14px;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .feature-card {
+        padding: 16px;
+      }
+
+      .feature-icon {
+        font-size: 28px;
+      }
+
+      .feature-title {
+        font-size: 15px;
+      }
+
+      .feature-desc {
+        font-size: 12px;
+      }
+
+      .example-prompts {
+        gap: 8px;
+      }
+
+      .example-prompt {
+        padding: 10px 14px;
+        font-size: 13px;
+      }
+
+      .corrected-sentence-container {
+        padding: 12px;
+        margin-top: 12px;
+      }
+
+      .corrected-text {
+        font-size: 14px;
+        padding: 10px;
+      }
+
+      .corrected-actions {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .corrected-actions button {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    /* Small mobile devices */
+    @media (max-width: 480px) {
+      .header-title {
+        font-size: 16px;
+      }
+
+      .logo-text {
+        display: none;
+      }
+
+      .new-chat-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+      }
+
+      .status-chip {
+        font-size: 10px;
+        padding: 5px 8px;
+      }
+
+      .chat-container {
+        padding: 12px;
+      }
+
+      .message-content {
+        font-size: 13px;
+      }
+
+      .suggestion-chip {
+        font-size: 12px;
+        padding: 6px 10px;
+      }
+    }
+
+    /* Touch-friendly enhancements */
+    @media (hover: none) and (pointer: coarse) {
+      button {
+        min-height: 44px;
+        min-width: 44px;
+      }
+
+      .suggestion-chip {
+        min-height: 44px;
+        padding: 10px 16px;
+      }
+
+      #userInput {
+        font-size: 16px;
       }
     }
   </style>
