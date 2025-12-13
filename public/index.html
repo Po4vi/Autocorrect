@@ -1145,36 +1145,36 @@
     <!-- Sidebar -->
     <div class="sidebar">
       <div class="logo">
-        <span class="logo-icon">🤔</span>
+        <span class="logo-icon">�✨</span>
         <span class="logo-text">Think</span>
       </div>
       
       <button class="new-chat-btn" id="newChatBtn">
-        ➕ New Chat
+        ✨ New Chat
       </button>
 
       <div class="sidebar-section">
-        <div class="sidebar-label">Conversation</div>
+        <div class="sidebar-label">💬 Conversation</div>
         <div class="sidebar-stats">
           <div class="stat-item">
-            <span>Messages</span>
+            <span>📨 Messages</span>
             <span class="stat-value" id="sidebarMessageCount">0</span>
           </div>
           <div class="stat-item">
-            <span>Session ID</span>
+            <span>🔑 Session ID</span>
             <span class="stat-value" style="font-size: 11px; opacity: 0.7;" id="sidebarSessionId">New</span>
           </div>
         </div>
       </div>
 
       <div class="sidebar-section" style="flex: 1; margin-bottom: 0;">
-        <div class="sidebar-label">Features</div>
+        <div class="sidebar-label">🎯 Features</div>
         <ul class="features-list">
-          <li>Spell Check</li>
-          <li>Grammar Fix</li>
-          <li>AI Assist</li>
-          <li>Memory</li>
-          <li>Context Aware</li>
+          <li>✍️ Spell Check</li>
+          <li>📝 Grammar Fix</li>
+          <li>🤖 AI Assist</li>
+          <li>🧠 Memory</li>
+          <li>🎯 Context Aware</li>
         </ul>
       </div>
     </div>
@@ -1184,8 +1184,8 @@
       <!-- Header -->
       <div class="header">
         <div class="header-title">
-          <h1>Welcome to Think</h1>
-          <p>Your AI-powered spell-check assistant</p>
+          <h1>🎉 Welcome to Think ✨</h1>
+          <p>Your AI-powered spell-check assistant 🚀</p>
         </div>
         <div class="header-actions">
           <button class="header-btn" id="statsBtn">
@@ -1202,44 +1202,45 @@
         <div class="status-chip success">🧠 Memory Active</div>
         <div class="status-chip">🤖 Model: GPT-3.5</div>
         <div class="status-chip warn">⚡ Fast Responses</div>
+        <div class="status-chip">🎯 Ready!</div>
       </div>
 
       <!-- Chat Container -->
       <div class="chat-container" id="chatContainer">
         <div class="welcome-section" id="welcomeSection">
-          <div class="welcome-icon">🤔</div>
-          <h2 class="welcome-title">Welcome to Think</h2>
-          <p class="welcome-subtitle">Your intelligent spell-checking and writing assistant. Start typing to get suggestions!</p>
+          <div class="welcome-icon">�✨</div>
+          <h2 class="welcome-title">🎉 Welcome to Think! 🎉</h2>
+          <p class="welcome-subtitle">Your intelligent spell-checking and writing assistant 🚀 Start typing to get suggestions! 💡</p>
           
           <div class="welcome-features">
             <div class="feature-card">
-              <div class="feature-icon">✓</div>
-              <div class="feature-name">Spell Check</div>
-              <div class="feature-desc">Real-time spelling detection</div>
+              <div class="feature-icon">✍️</div>
+              <div class="feature-name">Spell Check ✨</div>
+              <div class="feature-desc">Real-time spelling detection 🔍</div>
             </div>
             <div class="feature-card">
               <div class="feature-icon">🧠</div>
-              <div class="feature-name">Memory</div>
-              <div class="feature-desc">Remembers conversation</div>
+              <div class="feature-name">Memory 💾</div>
+              <div class="feature-desc">Remembers conversation 📚</div>
             </div>
             <div class="feature-card">
-              <div class="feature-icon">💬</div>
-              <div class="feature-name">AI Response</div>
-              <div class="feature-desc">Intelligent suggestions</div>
+              <div class="feature-icon">🤖</div>
+              <div class="feature-name">AI Response 💡</div>
+              <div class="feature-desc">Intelligent suggestions 🎯</div>
             </div>
             <div class="feature-card">
               <div class="feature-icon">⚡</div>
-              <div class="feature-name">Fast</div>
-              <div class="feature-desc">Quick processing</div>
+              <div class="feature-name">Fast 🚀</div>
+              <div class="feature-desc">Quick processing ⏱️</div>
             </div>
           </div>
 
           <div class="example-section">
-            <div class="example-title">Try typing something like:</div>
+            <div class="example-title">💭 Try typing something like:</div>
             <div class="example-items">
-              <div class="example-item" onclick="insertExample('i hav a speling eror')">i hav a speling eror</div>
-              <div class="example-item" onclick="insertExample('can u help me with grammer?')">can u help me with grammer?</div>
-              <div class="example-item" onclick="insertExample('what is the best way to write profesional emails?')">what is the best way to write profesional emails?</div>
+              <div class="example-item" onclick="insertExample('i hav a speling eror')">✏️ i hav a speling eror</div>
+              <div class="example-item" onclick="insertExample('can u help me with grammer?')">📝 can u help me with grammer?</div>
+              <div class="example-item" onclick="insertExample('what is the best way to write profesional emails?')">💼 what is the best way to write profesional emails?</div>
             </div>
           </div>
         </div>
@@ -1281,10 +1282,10 @@
     async function acceptSuggestion(wrongWord, correctWord, chipElement, messageDiv) {
       // Add visual feedback
       chipElement.classList.add('accepted');
-      chipElement.textContent = `✓ ${correctWord}`;
+      chipElement.textContent = `✅ ${correctWord}`;
       chipElement.style.cursor = 'default';
       chipElement.style.pointerEvents = 'none';
-      chipElement.title = 'Accepted';
+      chipElement.title = 'Accepted! 🎉';
 
       try {
         // Find the original user message in chat
@@ -1327,7 +1328,7 @@
               margin-top: 8px;
               animation: slideIn 0.3s ease;
             `;
-            feedbackDiv.innerHTML = `✓ Applied correction: <strong>${wrongWord}</strong> → <strong>${correctWord}</strong>`;
+            feedbackDiv.innerHTML = `✅ Applied correction: <strong>${wrongWord}</strong> → <strong>${correctWord}</strong> 🎉`;
             messageDiv.appendChild(feedbackDiv);
           }
         }
@@ -1346,7 +1347,7 @@
       navigator.clipboard.writeText(correctedText).then(() => {
         // Show feedback
         const originalText = buttonElement.textContent;
-        buttonElement.textContent = '✓ Copied!';
+        buttonElement.textContent = '✅ Copied!';
         buttonElement.style.background = '#0d3e1f';
         
         setTimeout(() => {
@@ -1355,6 +1356,7 @@
         }, 2000);
       }).catch(err => {
         console.error('Failed to copy:', err);
+        buttonElement.textContent = '❌ Failed';
       });
     }
 
@@ -1380,7 +1382,7 @@
           margin-top: 8px;
           animation: slideIn 0.3s ease;
         `;
-        feedbackDiv.innerHTML = `✓ Applied full correction`;
+        feedbackDiv.innerHTML = `✅ Applied full correction! 🎉`;
         parentMessage.appendChild(feedbackDiv);
       }
     }
@@ -1391,7 +1393,7 @@
       correctedSection.className = 'corrected-section';
       correctedSection.innerHTML = `
         <div class="corrected-label">
-          ✨ Suggested Correction
+          ✨ Suggested Correction 🎯
         </div>
         <div class="corrected-text">${correctedText}</div>
         <div class="corrected-actions">
@@ -1399,7 +1401,7 @@
             📋 Copy
           </button>
           <button class="corrected-btn apply" onclick="applyFullCorrection('${correctedText.replace(/'/g, "\\'")}')">
-            ✓ Apply All
+            ✅ Apply All
           </button>
         </div>
       `;
@@ -1449,7 +1451,7 @@
       if (!isUser) {
         const avatarDiv = document.createElement('div');
         avatarDiv.className = 'message-avatar';
-        avatarDiv.textContent = '🤔';
+        avatarDiv.textContent = '�✨';
         messageDiv.appendChild(avatarDiv);
       }
 
@@ -1470,9 +1472,9 @@
         analysisDiv.className = 'spell-analysis-card';
         analysisDiv.innerHTML = `
           <div class="analysis-header">
-            <span class="analysis-icon">🔍</span>
-            <span class="analysis-title">Spelling Analysis</span>
-            <span class="analysis-count">${spellingErrors.length} issue${spellingErrors.length > 1 ? 's' : ''}</span>
+            <span class="analysis-icon">🔍✨</span>
+            <span class="analysis-title">Spelling Analysis 📝</span>
+            <span class="analysis-count">🔴 ${spellingErrors.length} issue${spellingErrors.length > 1 ? 's' : ''} found</span>
           </div>
         `;
         
@@ -1578,7 +1580,7 @@
         return;
       }
 
-      if (!confirm('Are you sure you want to clear the conversation? This cannot be undone.')) {
+      if (!confirm('🗑️ Are you sure you want to clear the conversation? This cannot be undone! ⚠️')) {
         return;
       }
 
@@ -1592,46 +1594,46 @@
         // Clear UI
         chatContainer.innerHTML = `
           <div class="welcome-section" id="welcomeSection">
-            <div class="welcome-icon">🤔</div>
-            <h2 class="welcome-title">Welcome to Think</h2>
-            <p class="welcome-subtitle">Your intelligent spell-checking and writing assistant. Start typing to get suggestions!</p>
+            <div class="welcome-icon">�✨</div>
+            <h2 class="welcome-title">🎉 Welcome to Think! 🎉</h2>
+            <p class="welcome-subtitle">Your intelligent spell-checking and writing assistant 🚀 Start typing to get suggestions! 💡</p>
             
             <div class="welcome-features">
               <div class="feature-card">
-                <div class="feature-icon">✓</div>
-                <div class="feature-name">Spell Check</div>
-                <div class="feature-desc">Real-time spelling detection</div>
+                <div class="feature-icon">✍️</div>
+                <div class="feature-name">Spell Check ✨</div>
+                <div class="feature-desc">Real-time spelling detection 🔍</div>
               </div>
               <div class="feature-card">
                 <div class="feature-icon">🧠</div>
-                <div class="feature-name">Memory</div>
-                <div class="feature-desc">Remembers conversation</div>
+                <div class="feature-name">Memory 💾</div>
+                <div class="feature-desc">Remembers conversation 📚</div>
               </div>
               <div class="feature-card">
-                <div class="feature-icon">💬</div>
-                <div class="feature-name">AI Response</div>
-                <div class="feature-desc">Intelligent suggestions</div>
+                <div class="feature-icon">🤖</div>
+                <div class="feature-name">AI Response 💡</div>
+                <div class="feature-desc">Intelligent suggestions 🎯</div>
               </div>
               <div class="feature-card">
                 <div class="feature-icon">⚡</div>
-                <div class="feature-name">Fast</div>
-                <div class="feature-desc">Quick processing</div>
+                <div class="feature-name">Fast 🚀</div>
+                <div class="feature-desc">Quick processing ⏱️</div>
               </div>
             </div>
 
             <div class="example-section">
-              <div class="example-title">Try typing something like:</div>
+              <div class="example-title">💭 Try typing something like:</div>
               <div class="example-items">
-                <div class="example-item" onclick="insertExample('i hav a speling eror')">i hav a speling eror</div>
-                <div class="example-item" onclick="insertExample('can u help me with grammer?')">can u help me with grammer?</div>
-                <div class="example-item" onclick="insertExample('what is the best way to write profesional emails?')">what is the best way to write profesional emails?</div>
+                <div class="example-item" onclick="insertExample('i hav a speling eror')">✏️ i hav a speling eror</div>
+                <div class="example-item" onclick="insertExample('can u help me with grammer?')">📝 can u help me with grammer?</div>
+                <div class="example-item" onclick="insertExample('what is the best way to write profesional emails?')">💼 what is the best way to write profesional emails?</div>
               </div>
             </div>
           </div>
         `;
         updateMessageCount(0);
       } catch (error) {
-        alert('Error clearing conversation: ' + error.message);
+        alert('❌ Error clearing conversation: ' + error.message);
       }
     }
 
